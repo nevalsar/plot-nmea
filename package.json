@@ -11,9 +11,23 @@
     "map",
     "visualisation"
   ],
-  "window":{
-    // "toolbar": false
-    },
+  "window": {
+    "title": "Field Test Board Demo"
+  },
   "author": "Nevin Valsaraj",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "firebase": "^2.2.6",
+    "gulp": "^3.9.0",
+    "gulp-shell": "^0.4.2",
+    "gulp-util": "^3.0.5",
+    "nmea": "0.0.8",
+    "node-webkit-builder": "^1.0.12",
+    "nw": "^0.12.2",
+    "rimraf": "^2.3.4"
+  },
+  "dependencies": {
+    "firebase": "^2.2.6",
+    "nmea": "0.0.8"
+  }
 }
