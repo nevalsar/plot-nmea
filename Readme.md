@@ -4,6 +4,6 @@ Visualisation tool for GNSS(Global Navigation Satellite System) data received in
 
 Tools/libraries used:
  - [Node-webkit](http://nwjs.io)
- - [node-nmea](https://www.npmjs.com/package/nmea)
+ - [node-nmea](https://www.npmjs.com/package/nmea-0183)
  - [Google Maps API](https://developers.google.com/maps/web/)
- - [Firebase](https://firebase.com)
+ - [serialport](https://www.npmjs.com/package/serialport)
