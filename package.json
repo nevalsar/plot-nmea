@@ -12,9 +12,10 @@
     "visualisation"
   ],
   "window": {
+    "toolbar": false,
     "title": "Field Test Board Demo",
-    "height": 650,
-    "width": 800
+    "height": 768,
+    "width": 1024
   },
   "author": "Nevin Valsaraj",
   "license": "MIT",

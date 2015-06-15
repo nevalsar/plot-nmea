@@ -1,6 +1,8 @@
 var serialport = require("serialport")
 var nmea = require("nmea-0183")
 
+var nmeaObj
+
 var SerialPort = new serialport.SerialPort("COM6", {
   baudrate: 115200,
   parser: serialport.parsers.readline("\n")
@@ -29,9 +31,22 @@ function updateNMEA (string_nmea) {
         if (!isNaN(nmeaObj.latitude) && !isNaN(nmeaObj.longitude)) {
             console.log("Updating UI")
             nmea_textbox.textContent = string_nmea
-            nmea_location = new google.maps.LatLng(nmeaObj.latitude, nmeaObj.longitude);
-            marker.setPosition(nmea_location)
-            map.panTo(nmea_location)
+
+            var newPosition = new google.maps.LatLng(nmeaObj.latitude, nmeaObj.longitude);
+            var currentPosition = marker.getPosition()
+
+            var heading = google.maps.geometry.spherical.computeHeading(currentPosition, newPosition);
+
+            if (google.maps.geometry.spherical.computeDistanceBetween (newPosition, currentPosition) > 5) {
+                marker.setIcon({
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    scale: 6,
+                    rotation: heading
+                });
+            }
+
+            marker.setPosition(newPosition)
+            map.panTo(newPosition)
         }
     }
     catch(e){
