@@ -1,35 +1,41 @@
-var Firebase = require('firebase')
-var nmea = require("nmea")
+var serialport = require("serialport")
+var nmea = require("nmea-0183")
 
-var firebaseRef = new Firebase('https://torid-fire-8608.firebaseio.com');
-var nmea_location
+var SerialPort = new serialport.SerialPort("COM6", {
+  baudrate: 115200,
+  parser: serialport.parsers.readline("\n")
+}, false)
 
-firebaseRef.on('child_changed', function(firebase_childsnapshot, prevChildName) {
-    // code to handle new child.
-    console.log("Firebase Snapshot: ")
-    console.log(firebase_childsnapshot)
+SerialPort.open(function (error) {
+  if ( error ) {
+    console.log('failed to open: '+error)
+  } else {
+    console.log('Opened serial port')
 
-    var string_nmea = firebase_childsnapshot.val()
-    console.log("NMEA Raw : ")
-    console.log(string_nmea);
+    SerialPort.on('data', function(data) {
+      setTimeout(updateNMEA, 2000, data)
+    });
+  }
+});
 
+function updateNMEA (string_nmea) {
     try{
-        var string_nmea_parsed = nmea.parse(string_nmea)
+        nmeaObj = nmea.parse(string_nmea)
         console.log("NMEA Parsed : ")
-        console.log(string_nmea_parsed)
+        console.log(nmeaObj)
 
-        var nmea_lat = string_nmea_parsed.lat/100;
-        nmea_lat = (string_nmea_parsed.latPole === "N")? nmea_lat: -nmea_lat;
-        var nmea_lon = string_nmea_parsed.lon/100;
-        nmea_lon = (string_nmea_parsed.lonPole === "E")? nmea_lon: -nmea_lon;
-        console.log("Lat = " + nmea_lat, " Long = ", nmea_lon);
+        console.log("Lat = " + nmeaObj.latitude, " Long = ", nmeaObj.longitude);
 
-        nmea_location = new google.maps.LatLng(nmea_lat, nmea_lon);
-        marker.setPosition(nmea_location)
-        map.panTo(nmea_location)
+        if (!isNaN(nmeaObj.latitude) && !isNaN(nmeaObj.longitude)) {
+            console.log("Updating UI")
+            nmea_textbox.textContent = string_nmea
+            nmea_location = new google.maps.LatLng(nmeaObj.latitude, nmeaObj.longitude);
+            marker.setPosition(nmea_location)
+            map.panTo(nmea_location)
+        }
     }
     catch(e){
-        console.log("NMEA parse error : ")
-        console.log(e);
+        console.log("NMEA string parse error : ")
+        console.log(e)
     }
-});
+}

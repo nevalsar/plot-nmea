@@ -25,5 +25,5 @@ gulp.task('clean', function(callback) {
 })
 
 gulp.task('default', gshell.task([
-    './node_modules/nw/bin/nw . --debug'
+    'nw . --debug'
 ]))
